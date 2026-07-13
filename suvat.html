@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Motion Challenge (V6-Star System)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            color: #1e293b;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .header-section {
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            text-align: center; 
+            margin-bottom: 5px;
+        }
+        .logo-container {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 90px;
+        }
+        .logo-fallback {
+            display: flex;
+            width: 75px;
+            height: 75px;
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+            color: white;
+            border-radius: 50%;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+            border: 3px solid #ffffff;
+        }
+        .school-logo {
+            width: 100px; height: auto; max-height: 100px; object-fit: contain; margin-bottom: 12px;
+            border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        h1 { color: #0f172a; margin: 0 0 5px 0; font-size: 1.8rem; }
+        .teacher-name { font-size: 1.1rem; color: #2563eb; font-weight: 600; margin-bottom: 10px; }
+        
+        .student-info-box {
+            display: flex; gap: 15px; background: #ffffff; padding: 15px 25px; border-radius: 12px;
+            margin-bottom: 20px; width: 100%; max-width: 1000px; box-sizing: border-box;
+            border: 2px solid #cbd5e1; flex-wrap: wrap; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+        .input-group { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 220px; }
+        .input-group label { font-weight: bold; color: #334155; white-space: nowrap; font-size: 0.95rem; }
+        .input-group input {
+            width: 100%; padding: 10px 14px; border: 2px solid #94a3b8; border-radius: 8px;
+            font-size: 0.95rem; outline: none; transition: all 0.2s ease;
+        }
+        .input-group input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+        .input-group input:disabled { background-color: #f1f5f9; color: #94a3b8; }
+        
+        .main-container {
+            background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            max-width: 1000px; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; gap: 25px;
+        }
+
+        .question-card {
+            background-color: #f8fafc;
+            border: 2px solid #2563eb;
+            border-left: 8px solid #2563eb;
+            padding: 22px 28px;
+            border-radius: 12px;
+            font-size: 1.25rem;
+            line-height: 1.8;
+            color: #1e293b;
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.08);
+        }
+        .question-card b { color: #2563eb; background-color: #eff6ff; padding: 2px 6px; border-radius: 4px; }
+
+        .section-title {
+            font-size: 1.1rem; font-weight: bold; color: #475569; margin-bottom: 12px;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .formula-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .formula-btn {
+            background: #ffffff; border: 2px solid #cbd5e1; border-radius: 12px; padding: 20px;
+            font-size: 1.3rem; font-weight: bold; cursor: pointer; text-align: center; color: #334155;
+            transition: all 0.2s ease; font-style: italic;
+        }
+        .formula-btn:hover:not(:disabled) { border-color: #3b82f6; background-color: #eff6ff; transform: translateY(-2px); }
+        .formula-btn.selected { background-color: #10b981 !important; color: white !important; border-color: #059669 !important; }
+        .formula-btn.wrong { background-color: #fee2e2; color: #ef4444; border-color: #f87171; }
+        .formula-btn:disabled { cursor: not-allowed; opacity: 0.6; }
+
+        .matching-zone {
+            display: none; background: #f8fafc; border: 2px dashed #cbd5e1; padding: 25px; border-radius: 12px;
+            animation: fadeIn 0.4s ease forwards;
+        }
+        
+        .formula-slots-display {
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+            font-size: 1.6rem; font-weight: bold; font-style: italic; margin-bottom: 30px;
+            background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+        .slot {
+            min-width: 90px; height: 45px; background: #e2e8f0; border: 2px dashed #94a3b8;
+            border-radius: 8px; display: inline-flex; justify-content: center; align-items: center;
+            font-size: 1rem; color: #0f172a; font-style: normal; cursor: pointer; transition: all 0.2s;
+            padding: 0 10px; box-sizing: border-box;
+        }
+        .slot:hover:not(.locked) { border-color: #3b82f6; background: #f0fdf4; }
+        .slot.filled { background: #e0f2fe; border: 2px solid #3b82f6; font-weight: bold; font-size: 1.1rem; }
+        .slot.correct-slot { background: #d1fae5; border-color: #10b981; color: #064e3b; }
+        .slot.wrong-slot { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
+        
+        .variable-label { font-size: 0.85rem; color: #64748b; margin-right: 4px; font-weight: bold; font-style: normal; }
+
+        .pills-pool { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 25px; padding: 10px; }
+        
+        .quantity-pill {
+            background: white; border: 2px solid #94a3b8; border-radius: 20px; padding: 10px 24px;
+            font-size: 1.1rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; gap: 5px;
+            position: relative;
+        }
+        .quantity-pill:hover { border-color: #475569; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); }
+        
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.6); }
+            70% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+        }
+        .quantity-pill.active {
+            border-color: #2563eb !important; background-color: #eff6ff !important; color: #1d4ed8 !important;
+            transform: scale(1.1) translateY(-4px) !important; font-weight: 800;
+            animation: pulseGlow 1.5s infinite;
+        }
+
+        .quantity-pill.placed { border-color: #10b981; background-color: #f0fdf4; color: #14532d; }
+        .quantity-pill.placed::after {
+            content: '✓'; position: absolute; top: -6px; right: -6px; background: #10b981;
+            color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem;
+            display: flex; align-items: center; justify-content: center; font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .feedback { padding: 15px; border-radius: 8px; font-size: 1.05rem; line-height: 1.5; display: none; text-align: center; font-weight: bold; }
+        .success { background-color: #d1fae5; color: #064e3b; border: 1px solid #34d399; }
+        .error { background-color: #fee2e2; color: #7f1d1d; border: 1px solid #f87171; }
+        .warning { background-color: #fffbeb; color: #b45309; border: 1px solid #fcd34d; }
+        
+        /* 🌟 CSS เพิ่มเติม: ส่วนแสดงผลระบบดาวรางวัลตอนจบเกม */
+        .star-container {
+            font-size: 2.8rem;
+            margin: 15px 0 5px 0;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            letter-spacing: 2px;
+        }
+        .star-active {
+            color: #eab308; /* สีทองเจิดจรัส */
+            text-shadow: 0 0 12px rgba(234, 179, 8, 0.6);
+            animation: bounceIn 0.5s ease forwards;
+        }
+        .star-inactive {
+            color: #cbd5e1; /* สีเทาหม่นสำหรับดาวที่ไม่ได้ */
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .action-btn {
+            width: 100%; padding: 14px; background-color: #0f172a; color: white; border: none;
+            border-radius: 8px; font-weight: bold; cursor: pointer; text-align: center; font-size: 1.1rem;
+            display: none; transition: background 0.2s;
+        }
+        .action-btn:hover { background-color: #1e293b; }
+
+        .score-board { font-size: 1.05rem; font-weight: bold; text-align: center; margin-top: 10px; background: #f1f5f9; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+     <div class="header-section">
+        <img src="https://ekkavut-mahawit.github.io/freefall/logo.png" alt="โลโก้โรงเรียน" class="school-logo" onerror="this.src='https://via.placeholder.com/100?text=Logo'">
+        <h1>Motion Equation Analyzer</h1>
+        <div class="teacher-name">ผู้สอน: ครูเอกวัฒน์ ทาศรีภู</div>
+    </div>
+
+    <div class="student-info-box">
+        <div class="input-group"><label>ชื่อ-นามสกุล:</label><input type="text" id="studentName" placeholder="กรอกชื่อ-นามสกุล..." oninput="validateStudentInfo()"></div>
+        <div class="input-group"><label>ชั้น / ห้อง:</label><input type="text" id="studentClass" placeholder="เช่น ม.4/1" oninput="validateStudentInfo()"></div>
+        <div class="input-group"><label>เลขที่:</label><input type="number" id="studentNo" min="1" placeholder="เลขที่..." oninput="validateStudentInfo()"></div>
+    </div>
+
+    <div class="main-container">
+        <div class="question-card" id="questionText">
+            กรุณากรอกข้อมูลนักเรียนด้านบนให้ครบถ้วน เพื่อเริ่มต้นทำกิจกรรมทำท้าทายวิเคราะห์โจทย์ฟิสิกส์!
+        </div>
+
+        <div id="formulaSection" style="display: none;">
+            <div class="section-title">ขั้นตอนที่ 1: เลือกสูตรที่ครอบคลุมตัวแปรจากโจทย์วิเคราะห์ (เลือกผิดในครั้งแรกชวดแต้มส่วนนี้!)</div>
+            <div class="formula-grid">
+                <button class="formula-btn" id="f0" onclick="selectFormula(0)">v = u + at</button>
+                <button class="formula-btn" id="f1" onclick="selectFormula(1)">s = ((u + v) / 2)t</button>
+                <button class="formula-btn" id="f2" onclick="selectFormula(2)">s = ut + 0.5at²</button>
+                <button class="formula-btn" id="f3" onclick="selectFormula(3)">v² = u² + 2as</button>
+            </div>
+        </div>
+
+        <div class="matching-zone" id="matchingZone">
+            <div class="section-title">ขั้นตอนที่ 2: คลิกเลือก "แผ่นป้ายปริมาณ" ให้ขึ้นเรืองแสง แล้วคลิกหยอดลง in "ช่องตัวแปร" ของสูตร</div>
+            <div class="formula-slots-display" id="formulaSlotsDisplay"></div>
+            <div style="text-align: center; font-weight: bold; color: #475569; font-size: 0.95rem;">กองแผ่นป้ายปริมาณจากโจทย์:</div>
+            <div class="pills-pool" id="pillsPool"></div>
+        </div>
+
+        <div>
+            <div id="feedback" class="feedback"></div>
+            <button id="actionBtn" class="action-btn" onclick="handleAction()"></button>
+            <div class="score-board">คะแนนรวมของคุณ: <span id="score">0</span> / <span id="total">0</span> คะแนน (แต่ละข้อมี 2 คะแนน: เลือกสูตร 1 แต้ม + หยอดตัวแปร 1 แต้ม)</div>
+        </div>
+    </div>
+
+    <script>
+        const gameQuestionsPool = [
+            {
+                text: "รถยนต์คันหนึ่งเริ่มเคลื่อนที่จาก <b>'หยุดนิ่ง'</b> ไปตามถนนตรงด้วย <b>'ความเร่งคงที่ 2 m/s²'</b> เมื่อเวลาผ่านไป <b>'5 วินาที'</b> รถยนต์คันนี้จะเคลื่อนที่ได้ <b>'ระยะทางเท่าใด'</b>",
+                formulaIdx: 2,
+                slotsTemplate: [
+                    { type: 'text', value: 's' }, { type: 'slot', varName: 's' }, { type: 'text', value: '=' },
+                    { type: 'slot', varName: 'u' }, { type: 'text', value: '∙(' }, { type: 'slot', varName: 't' }, { type: 'text', value: ') + 0.5∙(' },
+                    { type: 'slot', varName: 'a' }, { type: 'text', value: ')∙(' }, { type: 'slot', varName: 't' }, { type: 'text', value: ')²' }
+                ],
+                pills: [
+                    { id: 'p1', text: '0 m/s', mapping: 'u' }, { id: 'p2', text: '2 m/s²', mapping: 'a' },
+                    { id: 'p3', text: '5 s', mapping: 't' }, { id: 'p4', text: '? (หาค่านี้)', mapping: 's' }
+                ]
+            },
+            {
+                text: "เครื่องบินแตะรันเวย์ด้วย <b>'ความเร็ว 50 m/s'</b> กัปตันทำการ <b>'เบรกจนเครื่องบินหยุดนิ่ง'</b> สนิทในเวลา <b>'10 วินาที'</b> จงคำนวณหา <b>'ระยะทางในการเบรก'</b> ทั้งหมดบนรันเวย์นี้",
+                formulaIdx: 1,
+                slotsTemplate: [
+                    { type: 'text', value: 's' }, { type: 'slot', varName: 's' }, { type: 'text', value: '= [ (' },
+                    { type: 'slot', varName: 'u' }, { type: 'text', value: '+' }, { type: 'slot', varName: 'v' },
+                    { type: 'text', value: ') / 2 ] ∙ (' }, { type: 'slot', varName: 't' }, { type: 'text', value: ')' }
+                ],
+                pills: [
+                    { id: 'p1', text: '50 m/s', mapping: 'u' }, { id: 'p2', text: '0 m/s', mapping: 'v' },
+                    { id: 'p3', text: '10 s', mapping: 't' }, { id: 'p4', text: '? (หาค่านี้)', mapping: 's' }
+                ]
+            },
+            {
+                text: "นักปั่นจักรยานควบจักรยานด้วย <b>'ความเร็วต้น 3 m/s'</b> จากนั้นเร่งเครื่องด้วย <b>'ความเร่ง 1 m/s²'</b> จนกระทั่งวัด <b>'ความเร็วปลายได้ 7 m/s'</b> อยากทราบว่านักปั่นได้ <b>'ระยะทางเท่าใด'</b> ในช่วงเร่งนี้",
+                formulaIdx: 3,
+                slotsTemplate: [
+                    { type: 'text', value: '(' }, { type: 'slot', varName: 'v' }, { type: 'text', value: ')² =' },
+                    { type: 'text', value: '(' }, { type: 'slot', varName: 'u' }, { type: 'text', value: ')² + 2∙(' },
+                    { type: 'slot', varName: 'a' }, { type: 'text', value: ')∙(' }, { type: 'slot', varName: 's' }, { type: 'text', value: ')' }
+                ],
+                pills: [
+                    { id: 'p1', text: '3 m/s', mapping: 'u' }, { id: 'p2', text: '1 m/s²', mapping: 'a' },
+                    { id: 'p3', text: '7 m/s', mapping: 'v' }, { id: 'p4', text: '? (หาค่านี้)', mapping: 's' }
+                ]
+            },
+            {
+                text: "โยนวัตถุขึ้นตรงๆ ในแนวดิ่งจากหน้าผาด้วย <b>'ความเร็วต้น 20 m/s'</b> ภายใต้แรงโน้มถ่วงโลกซึ่งทำให้มี <b>'ความเร่งโน้มถ่วงเป็น -10 m/s²'</b> จงคำนวณหา <b>'ความเร็ว'</b> ของวัตถุเมื่อเวลาผ่านไป <b>'3 วินาที'</b>",
+                formulaIdx: 0,
+                slotsTemplate: [
+                    { type: 'text', value: 'v' }, { type: 'slot', varName: 'v' }, { type: 'text', value: '=' },
+                    { type: 'slot', varName: 'u' }, { type: 'text', value: ' + (' },
+                    { type: 'slot', varName: 'a' }, { type: 'text', value: ' ∙ ' }, { type: 'slot', varName: 't' }, { type: 'text', value: ')' }
+                ],
+                pills: [
+                    { id: 'p1', text: '20 m/s', mapping: 'u' }, { id: 'p2', text: '-10 m/s²', mapping: 'a' },
+                    { id: 'p3', text: '3 s', mapping: 't' }, { id: 'p4', text: '? (หาค่านี้)', mapping: 'v' }
+                ]
+            },
+            {
+                text: "รถบัสคันหนึ่งวิ่งออกจากอู่ด้วย <b>'ความเร็วต้น 10 m/s'</b> แล้วคนขับกดเร่งเครื่องด้วย <b>'ความเร่งคงตัว 3 m/s²'</b> นานเป็นเวลา <b>'4 วินาที'</b> รถบัสคันนี้จะทำ <b>'ความเร็วปลายได้เท่าใด'</b>",
+                formulaIdx: 0,
+                slotsTemplate: [
+                    { type: 'text', value: 'v' }, { type: 'slot', varName: 'v' }, { type: 'text', value: '=' },
+                    { type: 'slot', varName: 'u' }, { type: 'text', value: ' + (' },
+                    { type: 'slot', varName: 'a' }, { type: 'text', value: ' ∙ ' }, { type: 'slot', varName: 't' }, { type: 'text', value: ')' }
+                ],
+                pills: [
+                    { id: 'p1', text: '10 m/s', mapping: 'u' }, { id: 'p2', text: '3 m/s²', mapping: 'a' },
+                    { id: 'p3', text: '4 s', mapping: 't' }, { id: 'p4', text: '? (หาค่านี้)', mapping: 'v' }
+                ]
+            },
+            {
+                text: "ปล่อยลูกบอลเหล็กให้ <b>'ตกเสรีลงมาจากหน้าต่างตึก'</b> (ความเร็วต้นเป็นศูนย์) ภายใต้แรงโน้มถ่วงโลกที่มี <b>'ความเร่ง 10 m/s²'</b> หากจับเวลาจนลูกบอลกระทบพื้นได้ <b>'2 วินาที'</b> หน้าต่างนี้สูงจากพื้น <b>'เป็นระยะทางกี่เมตร'</b>",
+                formulaIdx: 2,
+                slotsTemplate: [
+                    { type: 'text', value: 's' }, { type: 'slot', varName: 's' }, { type: 'text', value: '=' },
+                    { type: 'slot', varName: 'u' }, { type: 'text', value: '∙(' }, { type: 'slot', varName: 't' }, { type: 'text', value: ') + 0.5∙(' },
+                    { type: 'slot', varName: 'a' }, { type: 'text', value: ')∙(' }, { type: 'slot', varName: 't' }, { type: 'text', value: ')²' }
+                ],
+                pills: [
+                    { id: 'p1', text: '0 m/s', mapping: 'u' }, { id: 'p2', text: '10 m/s²', mapping: 'a' },
+                    { id: 'p3', text: '2 s', mapping: 't' }, { id: 'p4', text: '? (หาค่านี้)', mapping: 's' }
+                ]
+            }
+        ];
+
+        let gameQuestions = [];       
+        let currentQuestionIdx = 0;
+        let score = 0;
+        let gameState = "START"; 
+        let selectedPillElement = null;
+        let studentAnswers = {}; 
+        let formulaScoreEarned = 1; 
+
+        // ⚙️ ตั้งค่าจำนวนข้อเล่นจริงตรงนี้ (ระบบดาวจะคำนวณตามค่านี้โดยอัตโนมัติ)
+        const totalQuestions = 4; 
+
+        function isStudentInfoComplete() {
+            return document.getElementById('studentName').value.trim() !== "" && 
+                   document.getElementById('studentClass').value.trim() !== "" && 
+                   document.getElementById('studentNo').value.trim() !== "";
+        }
+
+        function validateStudentInfo() {
+            if (gameState !== "START") return;
+            if (isStudentInfoComplete()) {
+                generateRandomQuizSet();
+                gameState = "PHASE1";
+                loadQuestion();
+            }
+        }
+
+        function generateRandomQuizSet() {
+            let shuffledPool = [...gameQuestionsPool].sort(() => Math.random() - 0.5);
+            gameQuestions = shuffledPool.slice(0, totalQuestions);
+        }
+
+        function loadQuestion() {
+            const q = gameQuestions[currentQuestionIdx];
+            document.getElementById('questionText').innerHTML = `<b>โจทย์ข้อที่ ${currentQuestionIdx + 1}:</b> ${q.text}`;
+            document.getElementById('formulaSection').style.display = 'block';
+            document.getElementById('matchingZone').style.display = 'none';
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('actionBtn').style.display = 'none';
+            
+            formulaScoreEarned = 1;
+
+            for (let i = 0; i < 4; i++) {
+                const btn = document.getElementById(`f${i}`);
+                btn.className = "formula-btn";
+                btn.disabled = false;
+            }
+            
+            studentAnswers = {};
+            selectedPillElement = null;
+        }
+
+        function selectFormula(idx) {
+            const q = gameQuestions[currentQuestionIdx];
+            const clickedBtn = document.getElementById(`f${idx}`);
+            const feedback = document.getElementById('feedback');
+            
+            if (idx === q.formulaIdx) {
+                clickedBtn.classList.add('selected');
+                feedback.style.display = 'none';
+                
+                for (let i = 0; i < 4; i++) {
+                    if (i !== idx) document.getElementById(`f${i}`).disabled = true;
+                }
+                
+                setTimeout(() => {
+                    setupMatchingPhase();
+                }, 600);
+            } else {
+                formulaScoreEarned = 0;
+                clickedBtn.classList.add('wrong');
+                clickedBtn.disabled = true;
+
+                feedback.className = "feedback warning";
+                feedback.innerHTML = "❌ เลือกสูตรผิด! คุณเสียคะแนนในส่วนการวิเคราะห์สูตรของข้อนี้ไปแล้ว (0/1 แต้ม) แต่โปรดเลือกสูตรใหม่ให้ถูกต้องเพื่อไปต่อ";
+                feedback.style.display = 'block';
+            }
+        }
+
+        function setupMatchingPhase() {
+            gameState = "PHASE2";
+            document.getElementById('matchingZone').style.display = 'block';
+            document.getElementById('feedback').style.display = 'none';
+            
+            const q = gameQuestions[currentQuestionIdx];
+            const slotsContainer = document.getElementById('formulaSlotsDisplay');
+            slotsContainer.innerHTML = '';
+            
+            q.slotsTemplate.forEach((item, index) => {
+                if (item.type === 'text') {
+                    const span = document.createElement('span');
+                    span.innerText = ` ${item.value} `;
+                    slotsContainer.appendChild(span);
+                } else if (item.type === 'slot') {
+                    const slotUniqueId = `slot_${item.varName}_idx${index}`;
+                    const div = document.createElement('div');
+                    div.className = "slot";
+                    div.id = slotUniqueId;
+                    div.setAttribute('data-var', item.varName);
+                    div.innerHTML = `<span class="variable-label">${item.varName}=</span> ?`;
+                    div.onclick = () => placePillInSlot(div);
+                    slotsContainer.appendChild(div);
+                }
+            });
+
+            const pillsContainer = document.getElementById('pillsPool');
+            pillsContainer.innerHTML = '';
+            
+            let shuffledPills = [...q.pills].sort(() => Math.random() - 0.5);
+            shuffledPills.forEach(pill => {
+                const btn = document.createElement('button');
+                btn.className = "quantity-pill";
+                btn.id = pill.id;
+                btn.innerText = pill.text;
+                btn.onclick = () => selectPill(btn, pill);
+                pillsContainer.appendChild(btn);
+            });
+
+            const actionBtn = document.getElementById('actionBtn');
+            actionBtn.innerText = "ตรวจคำตอบของข้อนี้ ✔";
+            actionBtn.style.display = 'block';
+            actionBtn.style.backgroundColor = "#0f172a";
+        }
+
+        function selectPill(element, pillData) {
+            if (gameState !== "PHASE2") return;
+
+            if (selectedPillElement === element) {
+                element.classList.remove('active');
+                selectedPillElement = null;
+                return;
+            }
+
+            if (selectedPillElement) {
+                selectedPillElement.classList.remove('active');
+            }
+
+            selectedPillElement = element;
+            element.classList.add('active');
+            element.pillData = pillData;
+        }
+
+        function placePillInSlot(slotElement) {
+            if (gameState !== "PHASE2" || slotElement.classList.contains('locked')) return;
+            const varName = slotElement.getAttribute('data-var');
+
+            if (slotElement.classList.contains('filled')) {
+                slotElement.classList.remove('filled');
+                slotElement.innerHTML = `<span class="variable-label">${varName}=</span> ?`;
+                slotElement.removeAttribute('data-pill-id');
+                delete studentAnswers[slotElement.id];
+                updatePillUsageVisuals();
+                return;
+            }
+
+            if (selectedPillElement) {
+                const pillData = selectedPillElement.pillData;
+
+                slotElement.className = "slot filled";
+                slotElement.innerHTML = `<span class="variable-label">${varName}=</span> ${pillData.text}`;
+                slotElement.setAttribute('data-pill-id', selectedPillElement.id);
+
+                studentAnswers[slotElement.id] = {
+                    pillId: selectedPillElement.id,
+                    text: pillData.text,
+                    correctMapping: pillData.mapping
+                };
+
+                selectedPillElement.classList.remove('active');
+                updatePillUsageVisuals();
+                selectedPillElement = null;
+            }
+        }
+
+        function updatePillUsageVisuals() {
+            const pills = document.querySelectorAll('.quantity-pill');
+            pills.forEach(p => p.classList.remove('placed'));
+
+            const currentUsedPillIds = Object.values(studentAnswers).map(ans => ans.pillId);
+            currentUsedPillIds.forEach(id => {
+                const pillEl = document.getElementById(id);
+                if (pillEl) pillEl.classList.add('placed');
+            });
+        }
+
+        function handleAction() {
+            if (gameState === "PHASE2") {
+                checkMatchingAnswers();
+            } else if (gameState === "FEEDBACK") {
+                currentQuestionIdx++;
+                if (currentQuestionIdx < totalQuestions) {
+                    gameState = "PHASE1";
+                    loadQuestion();
+                } else {
+                    endGame();
+                }
+            }
+        }
+
+        function checkMatchingAnswers() {
+            const slots = document.querySelectorAll('.slot');
+            
+            if (Object.keys(studentAnswers).length < slots.length) {
+                alert("กรุณาหยอดตัวเลขปริมาณลงในช่องตัวแปรของสูตรให้ครบทุกช่องก่อนตรวจคำตอบครับ!");
+                return;
+            }
+
+            gameState = "FEEDBACK";
+            let allVariablesCorrect = true;
+
+            slots.forEach(slot => {
+                const varName = slot.getAttribute('data-var');
+                const ans = studentAnswers[slot.id];
+                
+                if (ans && ans.correctMapping === varName) {
+                    slot.classList.add('correct-slot');
+                } else {
+                    slot.classList.add('wrong-slot');
+                    allVariablesCorrect = false;
+                }
+                slot.classList.add('locked'); 
+            });
+
+            let matchingScoreEarned = allVariablesCorrect ? 1 : 0;
+            let totalQuestionScoreEarned = formulaScoreEarned + matchingScoreEarned;
+            
+            score += totalQuestionScoreEarned;
+
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+
+            let formulaReport = formulaScoreEarned === 1 ? "เลือกสูตรถูกต้อง (+1 แต้ม)" : "เลือกสูตรผิดพลาด (+0 แต้ม)";
+            let variablesReport = matchingScoreEarned === 1 ? "หยอดตัวแปรถูกต้องทั้งหมด (+1 แต้ม)" : "หยอดตัวแปรผิดพลาด (+0 แต้ม)";
+
+            if (totalQuestionScoreEarned === 2) {
+                feedback.className = "feedback success";
+                feedback.innerHTML = `🌟 ยอดเยี่ยมมาก! คุณจับคู่ความสัมพันธ์ของปริมาณฟิสิกส์ลงสูตรได้แม่นยำ ได้ 2/2 แต้มเต็มในข้อนี้ <br> (${formulaReport} | ${variablesReport})`;
+            } else if (totalQuestionScoreEarned === 1) {
+                feedback.className = "feedback warning";
+                feedback.innerHTML = `ผ่านเกณฑ์กึ่งหนึ่ง! ได้รับคะแนน 1/2 ในข้อนี้ <br> (${formulaReport} | ${variablesReport})`;
+            } else {
+                feedback.className = "feedback error";
+                feedback.innerHTML = `ยังไม่ผ่านเกณฑ์! ได้รับคะแนน 0/2 ในข้อนี้ <br> (${formulaReport} | ${variablesReport})`;
+            }
+
+            document.getElementById('score').innerText = score;
+            document.getElementById('total').innerText = (currentQuestionIdx + 1) * 2;
+
+            const actionBtn = document.getElementById('actionBtn');
+            if (currentQuestionIdx + 1 < totalQuestions) {
+                actionBtn.innerText = "ลุยโจทย์ข้อถัดไป ➔";
+            } else {
+                actionBtn.innerText = "ดูผลสรุปคะแนนและส่งผลการเรียน ➔";
+            }
+        }
+
+        // 🌟 ฟังก์ชันคำนวณและสร้างไอคอนดาวแบบ Dynamic เปอร์เซ็นต์
+        function generateStarHTML(currentScore, maxScore) {
+            if (maxScore === 0) return "";
+            const percentage = (currentScore / maxScore) * 100;
+            
+            let starsEarned = 0;
+            if (percentage >= 90) starsEarned = 5;
+            else if (percentage >= 70) starsEarned = 4;
+            else if (percentage >= 50) starsEarned = 3;
+            else if (percentage >= 25) starsEarned = 2;
+            else if (currentScore > 0) starsEarned = 1;
+
+            let starHTML = '<div class="star-container">';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= starsEarned) {
+                    starHTML += `<span class="star-active" style="animation-delay: ${i * 100}ms">★</span>`;
+                } else {
+                    starHTML += '<span class="star-inactive">★</span>';
+                }
+            }
+            starHTML += '</div>';
+            return starHTML;
+        }
+
+        function endGame() {
+            gameState = "GAMEOVER";
+            document.getElementById('studentName').disabled = true;
+            document.getElementById('studentClass').disabled = true;
+            document.getElementById('studentNo').disabled = true;
+            document.getElementById('formulaSection').style.display = 'none';
+            document.getElementById('matchingZone').style.display = 'none';
+            document.getElementById('actionBtn').style.display = 'none';
+
+            const maxScore = totalQuestions * 2;
+            
+            // สร้างดาวและแสดงผลทันที ไม่ต้องรอระบบบันทึก
+            const starsHTML = generateStarHTML(score, maxScore);
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+            feedback.className = "feedback success";
+            
+            // แสดงดาว + คะแนน ทันที
+            feedback.innerHTML = `${starsHTML} 🎉 จบการแข่งขัน! <br>นักเรียนได้คะแนนรวม: <b>${score} / ${maxScore}</b> คะแนน<br><span style="font-size: 0.9rem; color: #64748b;">กำลังบันทึกข้อมูลลงระบบ... ⏳</span>`;
+
+            // === ใส่ URL ของ Google Apps Script ที่นี่ ===
+            const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzpEIIMd4_SzLtoZilcGo3I0wNndynQtxkBfv75ThImBssjmUaaQSJv_OuFehLgaDVh/exec"; 
+
+            // ตรวจสอบว่าถ้ายังไม่ได้ใส่ URL จริง ให้หยุดแค่นี้และแสดงดาวเลย
+            if (WEB_APP_URL === "ใส่_URL_WEB_APP_ที่นี่" || WEB_APP_URL.trim() === "") {
+                feedback.innerHTML = `${starsHTML} 🎉 จบการแข่งขัน! <br>นักเรียนได้คะแนนรวม: <b>${score} / ${maxScore}</b> คะแนน<br><span style="font-size: 0.9rem; color: #b45309;">(โหมดทดสอบ: ยังไม่ได้เชื่อมต่อ Google Sheets)</span>`;
+                return;
+            }
+
+            let formData = new URLSearchParams();
+            formData.append('name', document.getElementById('studentName').value);
+            formData.append('studentClass', document.getElementById('studentClass').value);
+            formData.append('studentNo', document.getElementById('studentNo').value);
+            formData.append('score', score);
+            formData.append('attempts', maxScore); 
+
+            // ส่งข้อมูลไป Google Sheets
+            fetch(WEB_APP_URL, { method: 'POST', body: formData })
+            .then(response => response.text())
+            .then(result => {
+                feedback.innerHTML = `${starsHTML} 🏆 <b>บันทึกคะแนนสำเร็จ!</b> <br>นักเรียนได้คะแนนรวม: ${score} / ${maxScore} คะแนน`;
+            })
+            .catch(error => {
+                feedback.className = "feedback warning";
+                feedback.innerHTML = `${starsHTML} ⚠️ <b>บันทึกคะแนนออฟไลน์สำเร็จ!</b> <br>ได้คะแนน ${score} / ${maxScore} คะแนน (กรุณาจับภาพหน้าจอนี้เพื่อยืนยันกับผู้สอน)`;
+            });
+        }
+    </script>
+</body>
+</html>
