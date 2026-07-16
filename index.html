@@ -29,6 +29,16 @@
             justify-content: center;
             align-items: center;
             height: 90px;
+
+        }
+        /* 🌟 วางโค้ดส่วนนี้เพิ่มเข้าไปได้เลยครับ */
+        .logo-img {
+            max-height: 90px; /* จำกัดความสูงไม่ให้ดันหน้าจอ */
+            max-width: 250px;  /* จำกัดความกว้างสูงสุด */
+            width: auto;
+            height: auto;
+            object-fit: contain; /* ป้องกันภาพบิดเบี้ยวผิดสัดส่วน */
+        }
         }
         .logo-fallback {
             display: flex;
@@ -194,9 +204,12 @@
 
     <div class="header-section">
         <div class="logo-container">
-            <div class="logo-fallback">PHYSICS</div>
+
+            <!-- 🛠️ วางแทนที่ของเดิม แล้วใส่ลิงก์รูปภาพหรือชื่อไฟล์โลโก้ตรง src ได้เลยครับ -->
+            <img class="logo-img" src="https://ekkavut-mahawit.github.io/smic-model/logo.png" alt="School/Physics Logo">
         </div>
-        <h1>Motion Equation Analyzer</h1>
+
+        <h1เกมวิเคราะห์ โจทย์การเคลื่อนที่</h1>
         <div class="teacher-name">ผู้สอน: ครูเอกวัฒน์ ทาศรีภู</div>
     </div>
 
