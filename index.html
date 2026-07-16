@@ -45,10 +45,7 @@
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
             border: 3px solid #ffffff;
         }
-        .school-logo {
-            width: 100px; height: auto; max-height: 100px; object-fit: contain; margin-bottom: 12px;
-            border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
+        
         h1 { color: #0f172a; margin: 0 0 5px 0; font-size: 1.8rem; }
         .teacher-name { font-size: 1.1rem; color: #2563eb; font-weight: 600; margin-bottom: 10px; }
         
@@ -126,6 +123,11 @@
 
         .pills-pool { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 25px; padding: 10px; }
         
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.6); }
+            70% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+        }
         .quantity-pill {
             background: white; border: 2px solid #94a3b8; border-radius: 20px; padding: 10px 24px;
             font-size: 1.1rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
@@ -134,11 +136,6 @@
         }
         .quantity-pill:hover { border-color: #475569; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); }
         
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.6); }
-            70% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
-        }
         .quantity-pill.active {
             border-color: #2563eb !important; background-color: #eff6ff !important; color: #1d4ed8 !important;
             transform: scale(1.1) translateY(-4px) !important; font-weight: 800;
@@ -158,7 +155,6 @@
         .error { background-color: #fee2e2; color: #7f1d1d; border: 1px solid #f87171; }
         .warning { background-color: #fffbeb; color: #b45309; border: 1px solid #fcd34d; }
         
-        /* 🌟 CSS เพิ่มเติม: ส่วนแสดงผลระบบดาวรางวัลตอนจบเกม */
         .star-container {
             font-size: 2.8rem;
             margin: 15px 0 5px 0;
@@ -168,12 +164,12 @@
             letter-spacing: 2px;
         }
         .star-active {
-            color: #eab308; /* สีทองเจิดจรัส */
+            color: #eab308; 
             text-shadow: 0 0 12px rgba(234, 179, 8, 0.6);
             animation: bounceIn 0.5s ease forwards;
         }
         .star-inactive {
-            color: #cbd5e1; /* สีเทาหม่นสำหรับดาวที่ไม่ได้ */
+            color: #cbd5e1; 
         }
         
         @keyframes bounceIn {
@@ -196,10 +192,12 @@
 </head>
 <body>
 
-     <div class="header-section">
-        <img src="https://ekkavut-mahawit.github.io/freefall/logo.png" alt="โลโก้โรงเรียน" class="school-logo" onerror="this.src='https://via.placeholder.com/100?text=Logo'">
+    <div class="header-section">
+        <div class="logo-container">
+            <div class="logo-fallback">PHYSICS</div>
+        </div>
         <h1>Motion Equation Analyzer</h1>
-        <div class="teacher-name">ผู้สอน: ครูเอกวัฒน์ ทาศรีภู</div>
+        <div class="teacher-name">ผู้สอน: ชื่อครูผู้สอน</div>
     </div>
 
     <div class="student-info-box">
@@ -224,7 +222,7 @@
         </div>
 
         <div class="matching-zone" id="matchingZone">
-            <div class="section-title">ขั้นตอนที่ 2: คลิกเลือก "แผ่นป้ายปริมาณ" ให้ขึ้นเรืองแสง แล้วคลิกหยอดลง in "ช่องตัวแปร" ของสูตร</div>
+            <div class="section-title">ขั้นตอนที่ 2: คลิกเลือก "แผ่นป้ายปริมาณ" ให้ขึ้นเรืองแสง แล้วคลิกหยอดลงใน "ช่องตัวแปร" ของสูตร</div>
             <div class="formula-slots-display" id="formulaSlotsDisplay"></div>
             <div style="text-align: center; font-weight: bold; color: #475569; font-size: 0.95rem;">กองแผ่นป้ายปริมาณจากโจทย์:</div>
             <div class="pills-pool" id="pillsPool"></div>
@@ -316,6 +314,137 @@
                     { id: 'p1', text: '0 m/s', mapping: 'u' }, { id: 'p2', text: '10 m/s²', mapping: 'a' },
                     { id: 'p3', text: '2 s', mapping: 't' }, { id: 'p4', text: '? (หาค่านี้)', mapping: 's' }
                 ]
+            },
+            /* 🌟 เพิ่มโจทย์ข้อใหม่ 10 ข้อ (ข้อ 7 - 16) 🌟 */
+            {
+                text: "นกตัวหนึ่งบินด้วย <b>'ความเร็วต้น 5 m/s'</b> แล้วเร่งความเร็วอย่างสม่ำเสมอจนมีความเร็วเป็น <b>'15 m/s'</b> ภายในเวลา <b>'4 วินาที'</b> นกตัวนี้บินได้ <b>'ระยะทางเท่าใด'</b>",
+                formulaIdx: 1,
+                slotsTemplate: [
+                    { type: 'text', value: 's' }, { type: 'slot', varName: 's' }, { type: 'text', value: '= [ (' },
+                    { type: 'slot', varName: 'u' }, { type: 'text', value: '+' }, { type: 'slot', varName: 'v' },
+                    { type: 'text', value: ') / 2 ] ∙ (' }, { type: 'slot', varName: 't' }, { type: 'text', value: ')' }
+                ],
+                pills: [
+                    { id: 'p1', text: '5 m/s', mapping: 'u' }, { id: 'p2', text: '15 m/s', mapping: 'v' },
+                    { id: 'p3', text: '4 s', mapping: 't' }, { id: 'p4', text: '? (หาค่านี้)', mapping: 's' }
+                ]
+            },
+            {
+                text: "นักวิ่งคนหนึ่งออกวิ่งจาก <b>'หยุดนิ่ง'</b> ด้วย <b>'ความเร่งคงที่ 3 m/s²'</b> จนกระทั่งวิ่งได้ <b>'ระยะทาง 24 เมตร'</b> เขาจะมีความเร็วปลาย <b>'เป็นเท่าใด'</b>",
+                formulaIdx: 3,
+                slotsTemplate: [
+                    { type: 'text', value: '(' }, { type: 'slot', varName: 'v' }, { type: 'text', value: ')² =' },
+                    { type: 'text', value: '(' }, { type: 'slot', varName: 'u' }, { type: 'text', value: ')² + 2∙(' },
+                    { type: 'slot', varName: 'a' }, { type: 'text', value: ')∙(' }, { type: 'slot', varName: 's' }, { type: 'text', value: ')' }
+                ],
+                pills: [
+                    { id: 'p1', text: '0 m/s', mapping: 'u' }, { id: 'p2', text: '3 m/s²', mapping: 'a' },
+                    { id: 'p3', text: '24 m', mapping: 's' }, { id: 'p4', text: '? (หาค่านี้)', mapping: 'v' }
+                ]
+            },
+            {
+                text: "รถไฟชะลอความเร็วเข้าสถานีด้วย <b>'ความเร็วต้น 30 m/s'</b> และเกิด <b>'ความหน่วง -2 m/s²'</b> นานเป็นเวลา <b>'12 วินาที'</b> รถไฟขบวนนี้จะมี <b>'ความเร็วเหลือเท่าใด'</b>",
+                formulaIdx: 0,
+                slotsTemplate: [
+                    { type: 'text', value: 'v' }, { type: 'slot', varName: 'v' }, { type: 'text', value: '=' },
+                    { type: 'slot', varName: 'u' }, { type: 'text', value: ' + (' },
+                    { type: 'slot', varName: 'a' }, { type: 'text', value: ' ∙ ' }, { type: 'slot', varName: 't' }, { type: 'text', value: ')' }
+                ],
+                pills: [
+                    { id: 'p1', text: '30 m/s', mapping: 'u' }, { id: 'p2', text: '-2 m/s²', mapping: 'a' },
+                    { id: 'p3', text: '12 s', mapping: 't' }, { id: 'p4', text: '? (หาค่านี้)', mapping: 'v' }
+                ]
+            },
+            {
+                text: "เสือดาวตัวหนึ่งวิ่งไล่เหยื่อจาก <b>'หยุดนิ่ง'</b> ด้วย <b>'ความเร่งคงที่ 4 m/s²'</b> นานเป็นเวลา <b>'6 วินาที'</b> มันจะตะครุบเหยื่อได้ที่ <b>'ระยะทางกี่เมตร'</b>",
+                formulaIdx: 2,
+                slotsTemplate: [
+                    { type: 'text', value: 's' }, { type: 'slot', varName: 's' }, { type: 'text', value: '=' },
+                    { type: 'slot', varName: 'u' }, { type: 'text', value: '∙(' }, { type: 'slot', varName: 't' }, { type: 'text', value: ') + 0.5∙(' },
+                    { type: 'slot', varName: 'a' }, { type: 'text', value: ')∙(' }, { type: 'slot', varName: 't' }, { type: 'text', value: ')²' }
+                ],
+                pills: [
+                    { id: 'p1', text: '0 m/s', mapping: 'u' }, { id: 'p2', text: '4 m/s²', mapping: 'a' },
+                    { id: 'p3', text: '6 s', mapping: 't' }, { id: 'p4', text: '? (หาค่านี้)', mapping: 's' }
+                ]
+            },
+            {
+                text: "กระสุนปืนถูกยิงทะลุแผ่นไม้หนาด้วย <b>'ความเร็วต้น 200 m/s'</b> และหลุดออกจากแผ่นไม้ด้วย <b>'ความเร็วปลาย 100 m/s'</b> หากแผ่นไม้นี้มี <b>'ความหน่วง -150,000 m/s²'</b> แผ่นไม้หนา <b>'กี่เมตร'</b>",
+                formulaIdx: 3,
+                slotsTemplate: [
+                    { type: 'text', value: '(' }, { type: 'slot', varName: 'v' }, { type: 'text', value: ')² =' },
+                    { type: 'text', value: '(' }, { type: 'slot', varName: 'u' }, { type: 'text', value: ')² + 2∙(' },
+                    { type: 'slot', varName: 'a' }, { type: 'text', value: ')∙(' }, { type: 'slot', varName: 's' }, { type: 'text', value: ')' }
+                ],
+                pills: [
+                    { id: 'p1', text: '200 m/s', mapping: 'u' }, { id: 'p2', text: '100 m/s', mapping: 'v' },
+                    { id: 'p3', text: '-150,000 m/s²', mapping: 'a' }, { id: 'p4', text: '? (หาค่านี้)', mapping: 's' }
+                ]
+            },
+            {
+                text: "รถบรรทุกคันหนึ่งเคลื่อนที่ด้วย <b>'ความเร็วต้น 12 m/s'</b> และเร่งเครื่องอย่างสม่ำเสมอไปจนถึง <b>'ความเร็วปลาย 20 m/s'</b> ตลอด <b>'ระยะทาง 80 เมตร'</b> จงหาว่ารถบรรทุกใช้ <b>'เวลาเท่าใด'</b>",
+                formulaIdx: 1,
+                slotsTemplate: [
+                    { type: 'text', value: 's' }, { type: 'slot', varName: 's' }, { type: 'text', value: '= [ (' },
+                    { type: 'slot', varName: 'u' }, { type: 'text', value: '+' }, { type: 'slot', varName: 'v' },
+                    { type: 'text', value: ') / 2 ] ∙ (' }, { type: 'slot', varName: 't' }, { type: 'text', value: ')' }
+                ],
+                pills: [
+                    { id: 'p1', text: '12 m/s', mapping: 'u' }, { id: 'p2', text: '20 m/s', mapping: 'v' },
+                    { id: 'p3', text: '80 m', mapping: 's' }, { id: 'p4', text: '? (หาค่านี้)', mapping: 't' }
+                ]
+            },
+            {
+                text: "หินก้อนหนึ่งถูกโยนขึ้นฟ้าตรงๆ ด้วย <b>'ความเร็วต้น 25 m/s'</b> ภายใต้ความเร่งโน้มถ่วงซึ่งมี <b>'ความเร่งเป็น -10 m/s²'</b> นานเท่าใดหินจึงจะ <b>'ลดความเร็วลงจนหยุดนิ่ง'</b> ชั่วขณะที่จุดสูงสุด",
+                formulaIdx: 0,
+                slotsTemplate: [
+                    { type: 'text', value: 'v' }, { type: 'slot', varName: 'v' }, { type: 'text', value: '=' },
+                    { type: 'slot', varName: 'u' }, { type: 'text', value: ' + (' },
+                    { type: 'slot', varName: 'a' }, { type: 'text', value: ' ∙ ' }, { type: 'slot', varName: 't' }, { type: 'text', value: ')' }
+                ],
+                pills: [
+                    { id: 'p1', text: '25 m/s', mapping: 'u' }, { id: 'p2', text: '-10 m/s²', mapping: 'a' },
+                    { id: 'p3', text: '0 m/s', mapping: 'v' }, { id: 'p4', text: '? (หาค่านี้)', mapping: 't' }
+                ]
+            },
+            {
+                text: "รถจักรยานยนต์ขับขี่ด้วย <b>'ความเร็วต้น 15 m/s'</b> จากนั้นคนขับบิดคันเร่งส่งด้วย <b>'ความเร่ง 2 m/s²'</b> เป็นเวลา <b>'3 วินาที'</b> รถจะเคลื่อนที่ได้ <b>'ระยะทางเพิ่มขึ้นเท่าใด'</b>",
+                formulaIdx: 2,
+                slotsTemplate: [
+                    { type: 'text', value: 's' }, { type: 'slot', varName: 's' }, { type: 'text', value: '=' },
+                    { type: 'slot', varName: 'u' }, { type: 'text', value: '∙(' }, { type: 'slot', varName: 't' }, { type: 'text', value: ') + 0.5∙(' },
+                    { type: 'slot', varName: 'a' }, { type: 'text', value: ')∙(' }, { type: 'slot', varName: 't' }, { type: 'text', value: ')²' }
+                ],
+                pills: [
+                    { id: 'p1', text: '15 m/s', mapping: 'u' }, { id: 'p2', text: '2 m/s²', mapping: 'a' },
+                    { id: 'p3', text: '3 s', mapping: 't' }, { id: 'p4', text: '? (หาค่านี้)', mapping: 's' }
+                ]
+            },
+            {
+                text: "นักโดดร่มดิ่งพสุธาลงมาด้วย <b>'ความเร็วต้น 10 m/s'</b> ก่อนกระตุกร่ม ทรงตัวตกลงมาภายใต้ <b>'ความเร่งโน้มถ่วง 10 m/s²'</b> เป็น <b>'ระยะทาง 40 เมตร'</b> เขาจะมีความเร็วปลาย <b>'เป็นกี่เมตรต่อวินาที'</b>",
+                formulaIdx: 3,
+                slotsTemplate: [
+                    { type: 'text', value: '(' }, { type: 'slot', varName: 'v' }, { type: 'text', value: ')² =' },
+                    { type: 'text', value: '(' }, { type: 'slot', varName: 'u' }, { type: 'text', value: ')² + 2∙(' },
+                    { type: 'slot', varName: 'a' }, { type: 'text', value: ')∙(' }, { type: 'slot', varName: 's' }, { type: 'text', value: ')' }
+                ],
+                pills: [
+                    { id: 'p1', text: '10 m/s', mapping: 'u' }, { id: 'p2', text: '10 m/s²', mapping: 'a' },
+                    { id: 'p3', text: '40 m', mapping: 's' }, { id: 'p4', text: '? (หาค่านี้)', mapping: 'v' }
+                ]
+            },
+            {
+                text: "นักสเก็ตบอร์ดไถลลงเนินด้วย <b>'ความเร็วต้น 2 m/s'</b> และมีความเร็วปลายตรงตีนเนินเป็น <b>'8 m/s'</b> โดยใช้ <b>'เวลาไถล 5 วินาที'</b> เนินนี้มี <b>'ความยาวกี่เมตร'</b>",
+                formulaIdx: 1,
+                slotsTemplate: [
+                    { type: 'text', value: 's' }, { type: 'slot', varName: 's' }, { type: 'text', value: '= [ (' },
+                    { type: 'slot', varName: 'u' }, { type: 'text', value: '+' }, { type: 'slot', varName: 'v' },
+                    { type: 'text', value: ') / 2 ] ∙ (' }, { type: 'slot', varName: 't' }, { type: 'text', value: ')' }
+                ],
+                pills: [
+                    { id: 'p1', text: '2 m/s', mapping: 'u' }, { id: 'p2', text: '8 m/s', mapping: 'v' },
+                    { id: 'p3', text: '5 s', mapping: 't' }, { id: 'p4', text: '? (หาค่านี้)', mapping: 's' }
+                ]
             }
         ];
 
@@ -327,8 +456,8 @@
         let studentAnswers = {}; 
         let formulaScoreEarned = 1; 
 
-        // ⚙️ ตั้งค่าจำนวนข้อเล่นจริงตรงนี้ (ระบบดาวจะคำนวณตามค่านี้โดยอัตโนมัติ)
-        const totalQuestions = 4; 
+        // ⚙️ ตั้งค่าจำนวนข้อที่สุ่มมาให้ผู้เรียนเล่นจริงในแต่ละรอบตรงนี้ (แก้ไขตัวเลขได้ตามต้องการ เช่น 4, 5, หรือ 10 ข้อ)
+        const totalQuestions = 5; 
 
         function isStudentInfoComplete() {
             return document.getElementById('studentName').value.trim() !== "" && 
@@ -574,7 +703,6 @@
             }
         }
 
-        // 🌟 ฟังก์ชันคำนวณและสร้างไอคอนดาวแบบ Dynamic เปอร์เซ็นต์
         function generateStarHTML(currentScore, maxScore) {
             if (maxScore === 0) return "";
             const percentage = (currentScore / maxScore) * 100;
@@ -608,24 +736,13 @@
             document.getElementById('actionBtn').style.display = 'none';
 
             const maxScore = totalQuestions * 2;
-            
-            // สร้างดาวและแสดงผลทันที ไม่ต้องรอระบบบันทึก
             const starsHTML = generateStarHTML(score, maxScore);
+
             const feedback = document.getElementById('feedback');
-            feedback.style.display = 'block';
             feedback.className = "feedback success";
-            
-            // แสดงดาว + คะแนน ทันที
-            feedback.innerHTML = `${starsHTML} 🎉 จบการแข่งขัน! <br>นักเรียนได้คะแนนรวม: <b>${score} / ${maxScore}</b> คะแนน<br><span style="font-size: 0.9rem; color: #64748b;">กำลังบันทึกข้อมูลลงระบบ... ⏳</span>`;
+            feedback.innerHTML = "🎉 จบการแข่งขันวิเคราะห์โจทย์เรียบร้อย! ระบบกำลังบันทึกคะแนนของคุณ...";
 
-            // === ใส่ URL ของ Google Apps Script ที่นี่ ===
-            const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzpEIIMd4_SzLtoZilcGo3I0wNndynQtxkBfv75ThImBssjmUaaQSJv_OuFehLgaDVh/exec"; 
-
-            // ตรวจสอบว่าถ้ายังไม่ได้ใส่ URL จริง ให้หยุดแค่นี้และแสดงดาวเลย
-            if (WEB_APP_URL === "ใส่_URL_WEB_APP_ที่นี่" || WEB_APP_URL.trim() === "") {
-                feedback.innerHTML = `${starsHTML} 🎉 จบการแข่งขัน! <br>นักเรียนได้คะแนนรวม: <b>${score} / ${maxScore}</b> คะแนน<br><span style="font-size: 0.9rem; color: #b45309;">(โหมดทดสอบ: ยังไม่ได้เชื่อมต่อ Google Sheets)</span>`;
-                return;
-            }
+            const WEB_APP_URL = "ใส่_URL_WEB_APP_ที่นี่";
 
             let formData = new URLSearchParams();
             formData.append('name', document.getElementById('studentName').value);
@@ -634,15 +751,14 @@
             formData.append('score', score);
             formData.append('attempts', maxScore); 
 
-            // ส่งข้อมูลไป Google Sheets
             fetch(WEB_APP_URL, { method: 'POST', body: formData })
             .then(response => response.text())
             .then(result => {
-                feedback.innerHTML = `${starsHTML} 🏆 <b>บันทึกคะแนนสำเร็จ!</b> <br>นักเรียนได้คะแนนรวม: ${score} / ${maxScore} คะแนน`;
+                feedback.innerHTML = `${starsHTML} 🏆 บันทึกคะแนนสำเร็จ! <br>นักเรียนได้คะแนนรวมวิเคราะห์โจทย์ฟิสิกส์: ${score} / ${maxScore} คะแนน`;
             })
             .catch(error => {
-                feedback.className = "feedback warning";
-                feedback.innerHTML = `${starsHTML} ⚠️ <b>บันทึกคะแนนออฟไลน์สำเร็จ!</b> <br>ได้คะแนน ${score} / ${maxScore} คะแนน (กรุณาจับภาพหน้าจอนี้เพื่อยืนยันกับผู้สอน)`;
+                feedback.className = "feedback error";
+                feedback.innerHTML = `${starsHTML} บันทึกคะแนนออฟไลน์สำเร็จ! ได้รับคะแนน ${score} / ${maxScore} คะแนน (กรุณาจับภาพหน้าจอนี้เพื่อยืนยันกับผู้สอน)`;
             });
         }
     </script>
