@@ -197,7 +197,7 @@
             <div class="logo-fallback">PHYSICS</div>
         </div>
         <h1>Motion Equation Analyzer</h1>
-        <div class="teacher-name">ผู้สอน: ชื่อครูผู้สอน</div>
+        <div class="teacher-name">ผู้สอน: ครูเอกวัฒน์ ทาศรีภู</div>
     </div>
 
     <div class="student-info-box">
@@ -742,7 +742,7 @@
             feedback.className = "feedback success";
             feedback.innerHTML = "🎉 จบการแข่งขันวิเคราะห์โจทย์เรียบร้อย! ระบบกำลังบันทึกคะแนนของคุณ...";
 
-            const WEB_APP_URL = "ใส่_URL_WEB_APP_ที่นี่";
+            const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzpEIIMd4_SzLtoZilcGo3I0wNndynQtxkBfv75ThImBssjmUaaQSJv_OuFehLgaDVh/exec";
 
             let formData = new URLSearchParams();
             formData.append('name', document.getElementById('studentName').value);
@@ -758,7 +758,7 @@
             })
             .catch(error => {
                 feedback.className = "feedback error";
-                feedback.innerHTML = `${starsHTML} บันทึกคะแนนออฟไลน์สำเร็จ! ได้รับคะแนน ${score} / ${maxScore} คะแนน (กรุณาจับภาพหน้าจอนี้เพื่อยืนยันกับผู้สอน)`;
+                feedback.innerHTML = `${starsHTML} บันทึกคะแนนออฟไลน์สำเร็จ! ได้รับคะแนน ${score} / ${maxScore} คะแนน `;
             });
         }
     </script>
